@@ -12,6 +12,6 @@ import { UserModule } from './user/user.module';
     MongooseModule.forRoot('mongodb+srv://projectCicaeda:PC2025@projectcicaeda.quwjx.mongodb.net/?retryWrites=true&w=majority&appName=ProjectCicaeda'), //connection string from mongoDB atlas
     AuthModule,
     UserModule,
-  ],
+      ],
 })
 export class AppModule {}
