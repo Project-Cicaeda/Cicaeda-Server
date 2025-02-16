@@ -9,9 +9,10 @@ import { UserModule } from './user/user.module';
 @Module({
   imports: [
     ConfigModule.forRoot({isGlobal: true}),
-    MongooseModule.forRoot('mongodb+srv://projectCicaeda:PC2025@projectcicaeda.quwjx.mongodb.net/?retryWrites=true&w=majority&appName=ProjectCicaeda'), //connection string from mongoDB atlas
+    MongooseModule.forRoot(process.env.MONGO_URI), //connection string from mongoDB atlas
     AuthModule,
     UserModule,
-      ],
+    ],
+
 })
 export class AppModule {}
