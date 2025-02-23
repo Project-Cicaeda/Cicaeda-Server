@@ -8,8 +8,8 @@ export class QuestionnaireService{
     constructor(@InjectModel(QuestionnaireResult.name) private readonly resultModel:Model<QuestionnaireResult>){}
 
     private markingSystem = {
-        ques1: {/*marks for the options */},
-        ques2: {Yes: 2, No: 0},
+        question1: {A: 5, B: 3, C: 1},
+        question2: {Yes: 2, No: 0},
         //marks for other questions
     };
 
