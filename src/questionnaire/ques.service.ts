@@ -13,11 +13,19 @@ export class QuestionnaireService{
         //marks for other questions
     };
 
+    readonly nonScorableFields = ["fName", "lName", "city", "address" ];
+
     async calculation(responses: {key: string; value: string}[]){
         let total = 0;
+        let userDetails: Record<string, string> = {};
 
         responses.forEach(({key, value}) => {
-            if(this.markingSystem[key] && this.markingSystem[key][value] !== undefined){
+            if(["fName", "lName", "city", "address" ].includes(key)){
+                userDetails[key] = value;
+            }
+
+            //else process it for scoring
+            else if(this.markingSystem[key] && this.markingSystem[key][value] !== undefined){
                 total += this.markingSystem[key][value];
             }
         });
@@ -25,8 +33,6 @@ export class QuestionnaireService{
         const result = new this.resultModel({
             responses,
             total,
-            createdAt: new Date(),
-
         })
         
         const savedScore = await result.save();
