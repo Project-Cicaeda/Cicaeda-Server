@@ -13,15 +13,30 @@ export class QuestionnaireService{
         //marks for other questions
     };
 
+    private ageMarkingSystem = [
+        {min: 50, max: 59, points:2},
+        {min: 60, max: 69, points:3},
+        {min: 70, max: 100, points:4}
+    ];
+
     readonly nonScorableFields = ["fName", "lName", "city", "address" ];
 
     async calculation(responses: {key: string; value: string}[]){
         let total = 0;
         let userDetails: Record<string, string> = {};
+        let userAge: number | null = null;
+        let agePoints = 0;
 
         responses.forEach(({key, value}) => {
+            
+            //store string values seperately
             if(["fName", "lName", "city", "address" ].includes(key)){
                 userDetails[key] = value;
+            }
+
+            //convert age from string to number
+            else if(key === "age"){
+                userAge = parseInt(value);
             }
 
             //else process it for scoring
@@ -29,6 +44,15 @@ export class QuestionnaireService{
                 total += this.markingSystem[key][value];
             }
         });
+
+        if(userAge != null){
+            for(const range of this.ageMarkingSystem){
+                if( userAge >= range.min && userAge <= range.max){
+                    agePoints = range.points;
+                    total += agePoints;
+                }
+            }
+        }
 
         const result = new this.resultModel({
             responses,
@@ -38,7 +62,7 @@ export class QuestionnaireService{
         const savedScore = await result.save();
 
         //return the stored result
-        return { message: 'Questionnaire successfully submitted', total, savedScore};
+        return { message: 'Questionnaire successfully submitted', result};
     }
 }
 
