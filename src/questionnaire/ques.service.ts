@@ -8,9 +8,32 @@ export class QuestionnaireService{
     constructor(@InjectModel(QuestionnaireResult.name) private readonly resultModel:Model<QuestionnaireResult>){}
 
     private markingSystem = {
-        question1: {A: 5, B: 3, C: 1},
-        question2: {Yes: 2, No: 0},
-        //marks for other questions
+        //medical conditions
+        question1: {Male: 0, Female: 1}, //gender
+        question2: {Yes: 0, No: 0}, //anemia
+        question3: {Yes: 0, No: 0}, //high blood pressure
+        question4: {Yes: 0, No: 0}, //diabetes
+        question5: {Yes: 0, No: 0}, //Cardio vascular disease
+
+        //medical history
+        question6: {Yes: 0, No: 0}, //heartattacks
+        question7: {Yes: 0, No: 0}, //congestive heart variable
+        question8: {Yes: 0, No: 0}, //fam. history of heart disease
+
+        //kidney health questions
+        question9: {Yes: 0, No: 0}, // protienuria 
+        question10: {Yes: 0, No: 0}, //foamy or bubbly urine
+        question11: {Yes: 0, No: 0}, //frequant urine passing
+        question12: {Yes: 0, No: 0}, //less urine passing
+        question13: {Yes: 0, No: 0}, //
+
+        //general health
+        question14: {Yes: 0, No: 0}, //ankle edema
+        question15: {Yes: 0, No: 0}, //low energy
+        question16: {Yes: 0, No: 0}, //brain fog
+        question17: {Yes: 0, No: 0}, //unexplained weight loss
+        question18: {Yes: 0, No: 0},
+        question19: {Yes: 0, No: 0},
     };
 
     private ageMarkingSystem = [
