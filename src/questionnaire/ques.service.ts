@@ -77,15 +77,12 @@ export class QuestionnaireService{
             }
         }
 
-        const result = new this.resultModel({
-            responses,
-            total,
-        })
+        await new this.resultModel({total}).save;
         
-        const savedScore = await result.save();
-
+        
         //return the stored result
-        return { message: 'Questionnaire successfully submitted', result};
+        return { message: 'Questionnaire successfully submitted', 
+            total};
     }
 }
 
