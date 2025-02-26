@@ -1,12 +1,12 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { SignupDto } from './dtos/signup.dto';
+import { SignupDto } from '../dtos/signup.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from './schemas/user.schema';
+import { User } from '../schemas/user.schema';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
-import { LoginDto } from './dtos/login.dto';
+import { LoginDto } from '../dtos/login.dto';
 import { JwtService } from '@nestjs/jwt';
-import { RefreshToken } from './schemas/refresh-token.schema';
+import { RefreshToken } from '../schemas/refresh-token.schema';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()

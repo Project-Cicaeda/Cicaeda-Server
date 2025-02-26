@@ -1,6 +1,6 @@
 import { Controller, Post, Body } from "@nestjs/common";
 import { QuestionnaireService } from "./ques.service";
-import { QuestionnaireDto } from "src/auth/dtos/questionnaire.dto";
+import { QuestionnaireDto } from "src/dtos/questionnaire.dto";
 
 @Controller('questionnaire')
 export class QuestionnaireController{
