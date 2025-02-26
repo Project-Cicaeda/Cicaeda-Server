@@ -1,0 +1,24 @@
+{ 
+    "gender": {"Male": 0, "Female": 1}, 
+    "anemia": {"Yes": 1, "No": 0}, 
+    "hbp": {"Yes": 1, "No": 0}, 
+    "diabetes": {"Yes": 1, "No": 0}, 
+    "cvd": {"Yes": 0, "No": 0}, 
+
+    "heartattacks": {"Yes": 1, "No": 0}, 
+    "chf": {"Yes": 0, "No": 0}, 
+    "fam.hdhis": {"Yes": 0, "No": 0}, 
+
+    "protienuria": {"Yes": 1, "No": 0}, 
+    "urinestate": {"Yes": 0, "No": 0}, 
+    "freqUrine": {"Yes": 0, "No": 0}, 
+    "lessUrine": {"Yes": 0, "No": 0}, 
+    "question13": {"Yes": 0, "No": 0},
+
+    "ankleedema": {"Yes": 1, "No": 0},
+    "lowEnergy": {"Yes": 0, "No": 0},
+    "brainfog": {"Yes": 0, "No": 0},
+    "weightloss": {"Yes": 0, "No": 0},
+    "question18": {"Yes": 0, "No": 0},
+    "question19": {"Yes": 0, "No": 0}
+}
