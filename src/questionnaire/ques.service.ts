@@ -25,7 +25,7 @@ export class QuestionnaireService implements OnModuleInit{
     }
 
     private loadQuestions(){
-        const filepath = path.join(__dirname, 'data', 'questions.json');
+        const filepath = path.join(process.cwd(), 'src', 'questionnaire', 'data', 'questions.json');
         const filecontent = fs.readFileSync(filepath, "utf-8");
         this.markingSystem = JSON.parse(filecontent);
     }
