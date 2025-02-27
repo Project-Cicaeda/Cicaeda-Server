@@ -55,7 +55,24 @@ export class AuthService {
     }
 
     //Generate JWT token
-    return this.generateUserTokens(user._id);
+    const tokens = await this.generateUserTokens(user._id);
+    return {
+      ...tokens, 
+      userId: user._id 
+    };
+  }
+
+  async refreshTokens(refreshToken: String) {
+    const token = await this.RefreshTokenModel.findOneAndDelete({ //Deletes the token after use
+      token: refreshToken,
+      expiryDate: { $gte: new Date() }
+    });
+
+    if(!token) {
+      throw new UnauthorizedException("Refresh Token is invalid or expired");
+    }
+
+    return this.generateUserTokens(token.userId);
   }
 
   async generateUserTokens(userId){

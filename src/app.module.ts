@@ -4,14 +4,32 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import config from './config/config';
 
-//db connection string
-let db = 'mongodb+srv://projectcicaeda:se37@cluster0.xoffd.mongodb.net/Data_Base?retryWrites=true&w=majority'  //To recover from write failures(drawbacks??)
-
+//Setting values dynamically to securely pass confidential info & to change values easily 
 @Module({
   imports: [
-    MongooseModule.forRoot(db), //Change to async if dynamic
-    JwtModule.register({ global: true, secret: '123'}),
+    ConfigModule.forRoot({
+       isGlobal: true,
+       cache: true,  
+       load: [config]
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (config) => ({
+        uri: config.get('database.connectionString'),
+      }),
+      inject: [ConfigService],
+    }), 
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (config) => ({
+        secret: config.get('jwt.secret'),
+      }),
+      global: true,
+      inject: [ConfigService]
+    }),
     AuthModule
   ], 
   controllers: [AppController],
