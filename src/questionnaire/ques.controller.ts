@@ -6,6 +6,7 @@ import { QuestionnaireDto } from "src/dtos/questionnaire.dto";
 export class QuestionnaireController{
     constructor(private readonly questionnaireService: QuestionnaireService){}
 
+    //POST endpoint to get the responses
     @Post()
     async submitQues(@Body() questionnaireDto : QuestionnaireDto){
         return this.questionnaireService.calculation(questionnaireDto.responses);
