@@ -1,13 +1,13 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Req } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get("test")
-  getHello(): string {
-    console.log("SSS")
-    return this.appService.getHello();
+  @Get()
+  someProtectedRoute(@Req() req) {
+    return { message: 'Accessed Resource', userId: req.userId };  
+
   }
 }
