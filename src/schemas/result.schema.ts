@@ -9,8 +9,6 @@ export class SaveResult extends Document{
     @Prop({type: Number, required:true})
     totalScore: number;
 
-    @Prop({type: String, required:true})
-    riskScore: string;
 }
 
 export const ResultSchema = SchemaFactory.createForClass(SaveResult);
