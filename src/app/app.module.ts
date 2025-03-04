@@ -7,6 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { QuestionnaireController } from '../questionnaire/ques.controller';
 import { QuestionnaireService } from '../questionnaire/ques.service';
 import { QuestionnaireResult, QuesResultSchema } from '../schemas/ques.schema';
+import { ResultModule } from 'src/result/result.module';
 
 //db connection string
 let db = 'mongodb+srv://projectcicaeda:se37@cluster0.xoffd.mongodb.net/Data_Base?retryWrites=true&w=majority'  //To recover from write failures(drawbacks??)
@@ -16,7 +17,8 @@ let db = 'mongodb+srv://projectcicaeda:se37@cluster0.xoffd.mongodb.net/Data_Base
     MongooseModule.forRoot(db), //Change to async if dynamic
     MongooseModule.forFeature([{name: QuestionnaireResult.name, schema: QuesResultSchema}]),
     JwtModule.register({ global: true, secret: '123'}),
-    AuthModule
+    AuthModule,
+    ResultModule
   ], 
   controllers: [AppController, QuestionnaireController],
   providers: [AppService,   QuestionnaireService],

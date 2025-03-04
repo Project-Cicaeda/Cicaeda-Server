@@ -8,8 +8,8 @@ import { SaveResult } from "src/schemas/result.schema";
 export class ResultService{
     constructor(@InjectModel(SaveResult.name) private resultModel: Model<SaveResult>){}
 
-    async saveResult(userID: string, totalScore: number, riskScore: string){
-        const result = new this.resultModel({userID, totalScore, riskScore});
+    async saveResult(userID: string, totalScore: number){
+        const result = new this.resultModel({userID, totalScore});
         return result.save();
     }
 
