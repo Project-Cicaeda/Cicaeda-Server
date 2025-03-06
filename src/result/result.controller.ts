@@ -7,6 +7,11 @@ export class resultController{
 
     @Post('save')
     async saveResult(@Req() req, @Body() body){
+
+        if(!req.User || !req.User.userID){
+            throw new Error("user ID not found in payload");
+        }
+
         const userID = req.User.userID;
         const {totalScore} = body;
         return this.resultService.saveResult(userID, totalScore);
