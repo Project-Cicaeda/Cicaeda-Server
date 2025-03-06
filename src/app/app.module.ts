@@ -7,6 +7,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { QuestionnaireController } from '../questionnaire/ques.controller';
 import { QuestionnaireService } from '../questionnaire/ques.service';
 import { QuestionnaireResult, QuesResultSchema } from '../schemas/ques.schema';
+import { TsfController } from 'src/tsf/tsf.controller';
+import { TsfService } from 'src/tsf/tsf.service';
 
 //db connection string
 let db = 'mongodb+srv://projectcicaeda:se37@cluster0.xoffd.mongodb.net/Data_Base?retryWrites=true&w=majority'  //To recover from write failures(drawbacks??)
@@ -18,7 +20,7 @@ let db = 'mongodb+srv://projectcicaeda:se37@cluster0.xoffd.mongodb.net/Data_Base
     JwtModule.register({ global: true, secret: '123'}),
     AuthModule
   ], 
-  controllers: [AppController, QuestionnaireController],
-  providers: [AppService,   QuestionnaireService],
+  controllers: [AppController, QuestionnaireController,TsfController],
+  providers: [AppService,   QuestionnaireService,TsfService],
 })
 export class AppModule {}
