@@ -1,4 +1,4 @@
-import { Controller, Get, OnModuleInit, Post } from '@nestjs/common';
+import { Controller, Get, OnModuleInit, Post, Query } from '@nestjs/common';
 import { TsfService } from './tsf.service';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -22,9 +22,18 @@ onModuleInit() {
 
 
         @Get("forecast")
-        forecastPrediction():number{
+        forecastPrediction(@Query('city') city:string): Promise<number[]>{
+            const cityData =  this.dataset.filter((row) => row.City === city);
+            const lastSequence = cityData
+            .slice(-12) 
+            .map((row) => {
+                const { Date, City, Value, ...features } = row; 
+                return Object.values(features).map(Number);
+            });
 
-            return 0;
+              
+            const forecasting = this.tsfService.predict(lastSequence)
+            return forecasting;
         }
     
 }
