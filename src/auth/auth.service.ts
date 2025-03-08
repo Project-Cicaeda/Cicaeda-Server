@@ -55,11 +55,11 @@ export class AuthService {
     }
 
     //Generate JWT token
-    return this.generateUserTokens(user._id);
+    return this.generateUserTokens(user._id, user.email);
   }
 
-  async generateUserTokens(userId){
-    const accessToken = this.jwtService.sign({userId}, {expiresIn: '15m'} ); //Token will last for 15 minutes(Restart server), use https://www.epochconverter.com/ to confirm times
+  async generateUserTokens(userId, email:string){
+    const accessToken = this.jwtService.sign({userId, email}, {expiresIn: '15m'} ); //Token will last for 15 minutes(Restart server), use https://www.epochconverter.com/ to confirm times
     const refreshToken = uuidv4();
 
     await this.storeRefreshToken(refreshToken, userId);
