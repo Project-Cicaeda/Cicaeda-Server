@@ -90,6 +90,6 @@ export class AuthService {
     const expiryDate = new Date();
     expiryDate.setDate(expiryDate.getDate() + 3); //Refresh token will expire after 3 days from creation 
 
-    await this.RefreshTokenModel.updateOne({token, userId}, {$set: {expiryDate}}, {upsert: true});//If token exists expiry date will be updated. If not create new token
+    await this.RefreshTokenModel.updateOne({userId}, {$set: {expiryDate, token}}, {upsert: true});//If token exists expiry date will be updated. If not create new token
   }
 }
