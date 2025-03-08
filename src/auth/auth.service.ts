@@ -63,7 +63,7 @@ export class AuthService {
   }
 
   async refreshTokens(refreshToken: String) {
-    const token = await this.RefreshTokenModel.findOneAndDelete({ //Deletes the token after use
+    const token = await this.RefreshTokenModel.findOne({
       token: refreshToken,
       expiryDate: { $gte: new Date() }
     });
@@ -90,6 +90,6 @@ export class AuthService {
     const expiryDate = new Date();
     expiryDate.setDate(expiryDate.getDate() + 3); //Refresh token will expire after 3 days from creation 
 
-    await this.RefreshTokenModel.create({token, userId, expiryDate });
+    await this.RefreshTokenModel.updateOne({token, userId}, {$set: {expiryDate}}, {upsert: true});//If token exists expiry date will be updated. If not create new token
   }
 }
