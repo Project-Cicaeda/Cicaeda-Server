@@ -55,7 +55,24 @@ export class AuthService {
     }
 
     //Generate JWT token
-    return this.generateUserTokens(user._id);
+    const tokens = await this.generateUserTokens(user._id);
+    return {
+      ...tokens, 
+      userId: user._id 
+    };
+  }
+
+  async refreshTokens(refreshToken: String) {
+    const token = await this.RefreshTokenModel.findOne({
+      token: refreshToken,
+      expiryDate: { $gte: new Date() }
+    });
+
+    if(!token) {
+      throw new UnauthorizedException("Refresh Token is invalid or expired");
+    }
+
+    return this.generateUserTokens(token.userId);
   }
 
   async generateUserTokens(userId){
@@ -73,6 +90,6 @@ export class AuthService {
     const expiryDate = new Date();
     expiryDate.setDate(expiryDate.getDate() + 3); //Refresh token will expire after 3 days from creation 
 
-    await this.RefreshTokenModel.create({token, userId, expiryDate });
+    await this.RefreshTokenModel.updateOne({userId}, {$set: {expiryDate, token}}, {upsert: true});//If token exists expiry date will be updated. If not create new token
   }
 }
