@@ -76,7 +76,7 @@ export class AuthService {
   }
 
   async generateUserTokens(userId){
-    const accessToken = this.jwtService.sign({userId}, {expiresIn: 100} ); //Token will last for 15 minutes(Restart server), use https://www.epochconverter.com/ to confirm times
+    const accessToken = this.jwtService.sign({userId}, {expiresIn: '15m'} ); //Token will last for 15 minutes(Restart server), use https://www.epochconverter.com/ to confirm times
     const refreshToken = uuidv4();
 
     await this.storeRefreshToken(refreshToken, userId);
