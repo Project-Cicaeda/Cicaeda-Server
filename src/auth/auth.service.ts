@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { SignupDto } from '../dtos/signup.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../schemas/user.schema';
@@ -60,6 +60,25 @@ export class AuthService {
       ...tokens, 
       userId: user._id 
     };
+  }
+
+  async changePassword(userId, oldPassword: string, newPassword: string) {
+    //find user
+    const user = await this.UserModel.findById(userId);
+    if(!user){
+      throw new NotFoundException('User not found....');
+    }
+
+    //compare old password
+    const passwordMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!passwordMatch) {
+      throw new UnauthorizedException('Wrong password');
+    }
+
+    //change password and hash password
+    const newHashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = newHashedPassword;
+    await user.save();
   }
 
   async refreshTokens(refreshToken: String) {
