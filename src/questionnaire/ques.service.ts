@@ -1,7 +1,7 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { QuestionnaireResult } from "src/schemas/ques.schema";
+import { SaveResult } from "src/schemas/result.schema";
 import * as fs from "fs";
 import * as path from "path";
  
@@ -18,7 +18,9 @@ export class QuestionnaireService implements OnModuleInit{
 
     readonly nonScorableFields = ["fName", "lName", "city", "address" ];
 
-    constructor(@InjectModel(QuestionnaireResult.name) private readonly resultModel:Model<QuestionnaireResult>){}
+    constructor(
+        @InjectModel(SaveResult.name) private readonly resultModel:Model<SaveResult>
+    ){}
 
     async onModuleInit(){
         this.loadQuestions();
@@ -30,7 +32,7 @@ export class QuestionnaireService implements OnModuleInit{
         this.markingSystem = JSON.parse(filecontent);
     }
 
-    async calculation(responses: {key: string; value: string}[]){
+    async calculation(email: string, responses: {key: string; value: string}[]){
         let total = 0;
         let userDetails: Record<string, string> = {};
         let userAge: number | null = null;
@@ -63,12 +65,11 @@ export class QuestionnaireService implements OnModuleInit{
             }
         }
 
-        await new this.resultModel({total}).save;
-        
+        const resultSave = await this.resultModel.create({email, total});        
         
         //return the stored result
         return { message: 'Questionnaire successfully submitted', 
-            total};
+            resultSave};
     }
 }
 

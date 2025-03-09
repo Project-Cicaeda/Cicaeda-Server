@@ -10,16 +10,17 @@ import config from '../config/config';
 import { QuestionnaireController } from '../questionnaire/ques.controller';
 import { QuestionnaireService } from '../questionnaire/ques.service';
 import { QuestionnaireResult, QuesResultSchema } from '../schemas/ques.schema';
+import { ResultModule } from 'src/result/result.module';
 import { TsfController } from 'src/tsf/tsf.controller';
 import { TsfService } from 'src/tsf/tsf.service';
 
-//Setting values dynamically to securely pass confidential info & to change values easily 
+// Setting values dynamically to securely pass confidential info & to change values easily
 @Module({
   imports: [
     ConfigModule.forRoot({
-       isGlobal: true,
-       cache: true,  
-       load: [config]
+      isGlobal: true,
+      cache: true,  
+      load: [config]
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
@@ -28,7 +29,7 @@ import { TsfService } from 'src/tsf/tsf.service';
       }),
       inject: [ConfigService],
     }),
-    MongooseModule.forFeature([{name: QuestionnaireResult.name, schema: QuesResultSchema}]),
+    MongooseModule.forFeature([{ name: QuestionnaireResult.name, schema: QuesResultSchema }]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (config) => ({
@@ -37,9 +38,11 @@ import { TsfService } from 'src/tsf/tsf.service';
       global: true,
       inject: [ConfigService]
     }),
-    AuthModule
-  ], 
-  controllers: [AppController, QuestionnaireController,TsfController],
-  providers: [AppService,   QuestionnaireService,TsfService],
+    AuthModule,
+    ResultModule // Keeping ResultModule from ResultSaving branch
+  ],
+  controllers: [AppController, QuestionnaireController, TsfController],
+  providers: [AppService, QuestionnaireService, TsfService],
 })
 export class AppModule {}
+
