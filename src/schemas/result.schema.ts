@@ -4,8 +4,8 @@ import {Document, Types} from "mongoose";
 //schema to gather information to save results
 @Schema({timestamps: true})
 export class SaveResult extends Document{
-    @Prop({required: true})
-    email: string; //to check the user account
+    @Prop({required: true, type: Types.ObjectId, ref: 'User'})
+    userId: Types.ObjectId; //to check the user account
 
     @Prop({type: Number, required:true})
     totalScore: number; //questionnaire score

@@ -38,7 +38,7 @@ export class QuestionnaireService implements OnModuleInit{
     }
 
     //calculating the score for the questionnaire answers
-    async calculation(email: string, responses: {key: string; value: string}[]){
+    async calculation(userId: string, responses: {key: string; value: string}[]){
         let total = 0;
         let userDetails: Record<string, string> = {};
         let userAge: number | null = null;
@@ -73,8 +73,8 @@ export class QuestionnaireService implements OnModuleInit{
         }
 
         //saving result in the DB
-        const resultSave = await this.resultModel.create({email, total});        
-        
+        const resultSave = await this.resultModel.create({userId, total});        
+        await resultSave.save();
         //return the stored result
         return { message: 'Questionnaire successfully submitted', 
             resultSave};
