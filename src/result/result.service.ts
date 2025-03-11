@@ -8,11 +8,13 @@ import { SaveResult } from "src/schemas/result.schema";
 export class ResultService{
     constructor(@InjectModel(SaveResult.name) private resultModel: Model<SaveResult>){}
 
+    //saving result with the userID
     async saveResult(userID: string, totalScore: number){
         const result = new this.resultModel({userID, totalScore});
         return result.save();
     }
 
+    //getting user result history for the visual representation
     async getUserScore(userID: string){
         return this.resultModel.find({userID}).sort({createdAt: -1}).exec();
     }
