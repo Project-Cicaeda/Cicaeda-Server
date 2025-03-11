@@ -8,30 +8,36 @@ import * as path from "path";
 @Injectable()
 export class QuestionnaireService implements OnModuleInit{
 
+    //initializing marking system
     private markingSystem: Record<string, Record<string, number>> = {};
 
+    //constraints and marks for the age and related marks
     private ageMarkingSystem = [
         {min: 50, max: 59, points:2},
         {min: 60, max: 69, points:3},
         {min: 70, max: 100, points:4}
     ];
 
+    //string fields that are not considered for the marking system
     readonly nonScorableFields = ["fName", "lName", "city", "address" ];
 
     constructor(
         @InjectModel(SaveResult.name) private readonly resultModel:Model<SaveResult>
     ){}
 
+    //loading questions function
     async onModuleInit(){
         this.loadQuestions();
     }
 
+    //loading questions from the questionnaire json file
     private loadQuestions(){
         const filepath = path.join(process.cwd(), 'src', 'questionnaire', 'data', 'questions.json');
         const filecontent = fs.readFileSync(filepath, "utf-8");
         this.markingSystem = JSON.parse(filecontent);
     }
 
+    //calculating the score for the questionnaire answers
     async calculation(email: string, responses: {key: string; value: string}[]){
         let total = 0;
         let userDetails: Record<string, string> = {};
@@ -56,6 +62,7 @@ export class QuestionnaireService implements OnModuleInit{
             }
         });
 
+        //addding the points given for the age range to the total 
         if(userAge != null){
             for(const range of this.ageMarkingSystem){
                 if( userAge >= range.min && userAge <= range.max){
@@ -65,6 +72,7 @@ export class QuestionnaireService implements OnModuleInit{
             }
         }
 
+        //saving result in the DB
         const resultSave = await this.resultModel.create({email, total});        
         
         //return the stored result
