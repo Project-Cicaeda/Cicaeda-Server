@@ -18,4 +18,6 @@ export class ResultService{
     async getUserScore(userID: string){
         return this.resultModel.find({userID}).sort({createdAt: -1}).exec();
     }
+
+    //combine the result with the ml answer and return that to the user
 }

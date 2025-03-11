@@ -16,4 +16,6 @@ export class QuestionnaireController{
            // const email = req.user['email'];
         }
     }
+
+    //declare the controller to get the user result history
 }
