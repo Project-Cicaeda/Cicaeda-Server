@@ -15,3 +15,4 @@ export class SaveResult extends Document{
 }
 
 export const SaveResultSchema = SchemaFactory.createForClass(SaveResult);
+

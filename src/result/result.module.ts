@@ -12,6 +12,7 @@ import { ResultService } from "./result.service";
     controllers: [resultController],    
     providers : [ResultService],
     exports: [ResultService, MongooseModule]
+
 })
 
 export class ResultModule{}

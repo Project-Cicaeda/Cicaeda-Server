@@ -6,6 +6,7 @@ import { SaveResult } from "src/schemas/result.schema";
 
 @Injectable()
 export class ResultService{
+  
     constructor(@InjectModel(SaveResult.name) 
         private readonly resultModel: Model<SaveResult>
     ){}
@@ -22,5 +23,4 @@ export class ResultService{
     async getUserScore(userID: string){
         return this.resultModel.find({userID}).sort({createdAt: -1}).exec();
     }
-
 }

@@ -1,7 +1,7 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { QuestionnaireResult } from "src/schemas/ques.schema";
+import { SaveResult } from "src/schemas/result.schema";
 import * as fs from "fs";
 import * as path from "path";
 import { ResultService } from "src/result/result.service";
@@ -10,9 +10,10 @@ import { totalmem } from "os";
 @Injectable()
 export class QuestionnaireService implements OnModuleInit{ //extracting the questions logic
 
-    private markingSystem: Record<string, Record<string, number>> = {}; //getting the key and values from the questions.json file
+    //initializing marking system
+    private markingSystem: Record<string, Record<string, number>> = {};
 
-    //to give points based on the age range
+    //constraints and marks for the age and related marks
     private ageMarkingSystem = [
         {min: 50, max: 59, points:2},
         {min: 60, max: 69, points:3},
@@ -29,10 +30,13 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
     ) {}
     //loading questions function
 
+
+    //loading questions function
     async onModuleInit(){
         this.loadQuestions();
     }
 
+    //loading questions from the questionnaire json file
     private loadQuestions(){
         const filepath = path.join(process.cwd(), 'src', 'questionnaire', 'data', 'questions.json');
         const filecontent = fs.readFileSync(filepath, "utf-8");
@@ -64,7 +68,7 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
             }
         });
 
-        //calculating the age points and adding them to the total
+        //addding the points given for the age range to the total 
         if(userAge != null){
             for(const range of this.ageMarkingSystem){
                 if( userAge >= range.min && userAge <= range.max){
@@ -73,10 +77,6 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
                 }
             }
         }
-        
-        //return the stored result
-        return { message: 'Questionnaire successfully submitted', 
-            total};
     }
 
     //saving result in the DB
