@@ -6,6 +6,7 @@ export type QuestionnaireResultDoc = QuestionnaireResult & Document;
 
 @Schema()
 export class QuestionnaireResult{
+
     //declaring the user responses array
     @Prop({type: Array})
     responses: {key: string; value: string}[];

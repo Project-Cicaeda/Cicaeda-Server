@@ -4,9 +4,11 @@ import { Model } from "mongoose";
 import { SaveResult } from "src/schemas/result.schema";
 import * as fs from "fs";
 import * as path from "path";
+import { ResultService } from "src/result/result.service";
+import { totalmem } from "os";
  
 @Injectable()
-export class QuestionnaireService implements OnModuleInit{
+export class QuestionnaireService implements OnModuleInit{ //extracting the questions logic
 
     //initializing marking system
     private markingSystem: Record<string, Record<string, number>> = {};
@@ -18,12 +20,16 @@ export class QuestionnaireService implements OnModuleInit{
         {min: 70, max: 100, points:4}
     ];
 
-    //string fields that are not considered for the marking system
+    //user details
     readonly nonScorableFields = ["fName", "lName", "city", "address" ];
 
     constructor(
-        @InjectModel(SaveResult.name) private readonly resultModel:Model<SaveResult>
-    ){}
+
+        @InjectModel(QuestionnaireResult.name) private readonly resultModel: Model<QuestionnaireResult>,
+        private readonly resultService: ResultService,
+    ) {}
+    //loading questions function
+
 
     //loading questions function
     async onModuleInit(){
@@ -37,12 +43,12 @@ export class QuestionnaireService implements OnModuleInit{
         this.markingSystem = JSON.parse(filecontent);
     }
 
-    //calculating the score for the questionnaire answers
-    async calculation(userId: string, responses: {key: string; value: string}[]){
-        let total = 0;
-        let userDetails: Record<string, string> = {};
-        let userAge: number | null = null;
-        let agePoints = 0;
+    //calculation of the points based on the inputs
+    async calculation(responses: {key: string; value: string}[]){
+        let total = 0;  //final points
+        let userDetails: Record<string, string> = {};  //storing the uer details
+        let userAge: number | null = null;  //age of the user
+        let agePoints = 0;  //points given for the age range
 
         responses.forEach(({key, value}) => {
             
@@ -71,13 +77,12 @@ export class QuestionnaireService implements OnModuleInit{
                 }
             }
         }
-
-        //saving result in the DB
-        const resultSave = await this.resultModel.create({userId, total});        
-        await resultSave.save();
-        //return the stored result
-        return { message: 'Questionnaire successfully submitted', 
-            resultSave};
     }
+
+    //saving result in the DB
+    async saveQuesResult(userId: string, total: number){
+        return this.resultService.saveResult(userId, total);
+    }
+    
 }
 

@@ -14,9 +14,29 @@ import { ResultModule } from 'src/result/result.module';
 import { TsfController } from 'src/tsf/tsf.controller';
 import { TsfService } from 'src/tsf/tsf.service';
 
+import { ConfigModule, ConfigService } from '@nestjs/config';
+
+import { ResultModule } from 'src/result/result.module';
+import { TsfController } from 'src/tsf/tsf.controller';
+import { TsfService } from 'src/tsf/tsf.service';
+
+//db connection string
+let db = 'mongodb+srv://projectcicaeda:se37@cluster0.xoffd.mongodb.net/Data_Base?retryWrites=true&w=majority'  //To recover from write failures(drawbacks??)
+
+@Module({
+  imports: [
+    MongooseModule.forRoot(db), //Change to async if dynamic
+    MongooseModule.forFeature([{name: QuestionnaireResult.name, schema: QuesResultSchema}]),
+    JwtModule.register({ global: true, secret: '123'}),
+    AuthModule
+  ], 
+  controllers: [AppController, QuestionnaireController],
+  providers: [AppService,   QuestionnaireService],
+
 // Setting values dynamically to securely pass confidential info & to change values easily
 @Module({
   imports: [
+
     ConfigModule.forRoot({
       isGlobal: true,
       cache: true,  
@@ -29,7 +49,9 @@ import { TsfService } from 'src/tsf/tsf.service';
       }),
       inject: [ConfigService],
     }),
+
     MongooseModule.forFeature([{ name: QuestionnaireResult.name, schema: QuesResultSchema }]),
+
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (config) => ({
@@ -41,8 +63,13 @@ import { TsfService } from 'src/tsf/tsf.service';
     AuthModule,
     ResultModule // Keeping ResultModule from ResultSaving branch
   ],
+
+  controllers: [AppController, TsfController],
+  providers: [AppService,  TsfService],
+
   controllers: [AppController, QuestionnaireController, TsfController],
   providers: [AppService, QuestionnaireService, TsfService],
+
 })
 export class AppModule {}
 
