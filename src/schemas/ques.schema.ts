@@ -6,14 +6,10 @@ export type QuestionnaireResultDoc = QuestionnaireResult & Document;
 
 @Schema()
 export class QuestionnaireResult{
-<<<<<<< Updated upstream
-    @Prop({type: Array})
-    responses: {key: string; value: string}[];
-=======
+
     //declaring the user responses array
     @Prop({ type: [{ key: String, value: String }], default: [] })
     responses: { key: string; value: string }[]; 
->>>>>>> Stashed changes
 
     @Prop({required: true})
     total: number;

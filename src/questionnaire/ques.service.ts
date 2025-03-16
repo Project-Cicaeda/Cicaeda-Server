@@ -23,10 +23,12 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
     readonly nonScorableFields = ["fName", "lName", "city", "address" ];
 
     constructor(
+
         @InjectModel(QuestionnaireResult.name) private readonly resultModel: Model<QuestionnaireResult>,
         private readonly resultService: ResultService,
     ) {}
-    //loading the questions
+    //loading questions function
+
     async onModuleInit(){
         this.loadQuestions();
     }
@@ -71,13 +73,7 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
                 }
             }
         }
-<<<<<<< Updated upstream
-
-        //saving the result
-        await new this.resultModel({total}).save;
         
-=======
->>>>>>> Stashed changes
         //return the stored result
         return { message: 'Questionnaire successfully submitted', 
             total};
