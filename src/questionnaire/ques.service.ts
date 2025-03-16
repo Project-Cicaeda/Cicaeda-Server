@@ -4,6 +4,8 @@ import { Model } from "mongoose";
 import { QuestionnaireResult } from "src/schemas/ques.schema";
 import * as fs from "fs";
 import * as path from "path";
+import { ResultService } from "src/result/result.service";
+import { totalmem } from "os";
  
 @Injectable()
 export class QuestionnaireService implements OnModuleInit{ //extracting the questions logic
@@ -20,8 +22,10 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
     //user details
     readonly nonScorableFields = ["fName", "lName", "city", "address" ];
 
-    constructor(@InjectModel(QuestionnaireResult.name) private readonly resultModel:Model<QuestionnaireResult>){}
-
+    constructor(
+        @InjectModel(QuestionnaireResult.name) private readonly resultModel: Model<QuestionnaireResult>,
+        private readonly resultService: ResultService,
+    ) {}
     //loading the questions
     async onModuleInit(){
         this.loadQuestions();
@@ -67,13 +71,22 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
                 }
             }
         }
+<<<<<<< Updated upstream
 
         //saving the result
         await new this.resultModel({total}).save;
         
+=======
+>>>>>>> Stashed changes
         //return the stored result
         return { message: 'Questionnaire successfully submitted', 
             total};
     }
+
+    //saving result in the DB
+    async saveQuesResult(userId: string, total: number){
+        return this.resultService.saveResult(userId, total);
+    }
+    
 }
 
