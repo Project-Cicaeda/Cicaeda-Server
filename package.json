@@ -34,6 +34,7 @@
     "csv-parser": "^3.2.0",
     "fs": "^0.0.1-security",
     "mongoose": "^8.10.0",
+    "nanoid": "^3.3.7",
     "onnxruntime-node": "^1.20.1",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",

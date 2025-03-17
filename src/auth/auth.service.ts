@@ -8,6 +8,7 @@ import { LoginDto } from '../dtos/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { RefreshToken } from '../schemas/refresh-token.schema';
 import { v4 as uuidv4 } from 'uuid';
+import { nanoid } from 'nanoid';
 
 @Injectable()
 export class AuthService {
@@ -81,6 +82,20 @@ export class AuthService {
     await user.save();
   }
 
+  async forgotPassword(email: string) {
+    //confirm user exists
+    const user = await this.UserModel.findOne({ email });
+
+    if(user){
+    //TODO: generate password reset link 
+      const resetToken = nanoid(64); //number of characters in token
+
+    //TODO: send email with the password reset link (using nodemailer/ SES)
+    }
+
+    return { message: 'Password reset link has been sent to your email' };
+  }
+
   async refreshTokens(refreshToken: String) {
     const token = await this.RefreshTokenModel.findOne({
       token: refreshToken,
@@ -96,7 +111,7 @@ export class AuthService {
 
   async generateUserTokens(userId){
     const accessToken = this.jwtService.sign({userId}, {expiresIn: '15m'} ); //Token will last for 15 minutes(Restart server), use https://www.epochconverter.com/ to confirm times
-    const refreshToken = uuidv4();
+    const refreshToken = uuidv4(); 
 
     await this.storeRefreshToken(refreshToken, userId);
     return {
