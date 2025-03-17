@@ -20,7 +20,7 @@ export class ResultService{
     }
 
     //getting user result history for the visual representation
-    async getUserScore(userID: string){
-        return this.resultModel.find({userID}).sort({createdAt: -1}).exec();
+    async getUserScore(userId: string){
+        return this.resultModel.find({userId}).sort({createdAt: -1}).exec();
     }
 }

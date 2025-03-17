@@ -1,11 +1,10 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { SaveResult } from "src/schemas/result.schema";
+import { QuestionnaireResult } from "src/schemas/ques.schema";
 import * as fs from "fs";
 import * as path from "path";
 import { ResultService } from "src/result/result.service";
-import { totalmem } from "os";
  
 @Injectable()
 export class QuestionnaireService implements OnModuleInit{ //extracting the questions logic
@@ -28,8 +27,6 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
         @InjectModel(QuestionnaireResult.name) private readonly resultModel: Model<QuestionnaireResult>,
         private readonly resultService: ResultService,
     ) {}
-    //loading questions function
-
 
     //loading questions function
     async onModuleInit(){
@@ -44,7 +41,7 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
     }
 
     //calculation of the points based on the inputs
-    async calculation(responses: {key: string; value: string}[]){
+    async calculation(userId:string, responses: {key: string; value: string}[]){
         let total = 0;  //final points
         let userDetails: Record<string, string> = {};  //storing the uer details
         let userAge: number | null = null;  //age of the user
