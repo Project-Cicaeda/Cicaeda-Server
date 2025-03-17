@@ -47,7 +47,7 @@ export class TsfService implements OnModuleInit{
             const results = await this.session.run({ "input_1" : inputTensor });
 
             const scaledPrediction = results.dense.cpuData[0]
-            const prediction = this.inverseTransform(scaledPrediction)
+            const prediction =  Math.floor(this.inverseTransform(scaledPrediction))
       
             forecasting.push(prediction);
             lastSequence.shift();
