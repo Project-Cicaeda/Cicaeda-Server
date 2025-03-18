@@ -15,6 +15,10 @@ import { RefreshToken, RefreshTokenSchema } from '../schemas/refresh-token.schem
       {
         name: RefreshToken.name,
         schema: RefreshTokenSchema
+      },
+      {
+        name: RefreshToken.name,
+        schema: RefreshTokenSchema
       }
     ])
   ],

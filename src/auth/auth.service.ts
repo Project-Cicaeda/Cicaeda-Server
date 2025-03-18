@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { RefreshToken } from '../schemas/refresh-token.schema';
 import { v4 as uuidv4 } from 'uuid';
 import { nanoid } from 'nanoid';
+import { ResetToken } from '../schemas/reset-token.schema';
 
 @Injectable()
 export class AuthService {
@@ -16,6 +17,7 @@ export class AuthService {
   constructor(
     @InjectModel(User.name) private UserModel: Model<User>,
     @InjectModel(RefreshToken.name) private RefreshTokenModel: Model<RefreshToken>,
+    @InjectModel(ResetToken.name) private ResetTokenModel: Model<ResetToken>,
     private jwtService: JwtService
   ){}
 
@@ -67,19 +69,19 @@ export class AuthService {
   }
 
   async changePassword(userId, oldPassword: string, newPassword: string) {
-    //find user
+    //Find user
     const user = await this.UserModel.findById(userId);
     if(!user){
       throw new NotFoundException('User not found....');
     }
 
-    //compare old password
+    //Compare old password
     const passwordMatch = await bcrypt.compare(oldPassword, user.password);
     if (!passwordMatch) {
       throw new UnauthorizedException('Wrong password');
     }
 
-    //change password and hash password
+    //Change password and hash password
     const newHashedPassword = await bcrypt.hash(newPassword, 10);
     user.password = newHashedPassword;
     await user.save();
@@ -88,12 +90,20 @@ export class AuthService {
   }
 
   async forgotPassword(email: string) {
-    //confirm user exists
+    //Confirm user exists
     const user = await this.UserModel.findOne({ email });
 
     if(user){
-    //TODO: generate password reset link 
-      const resetToken = nanoid(64); //number of characters in token
+    //Generate password reset link 
+      const expiryDate = new Date();
+      expiryDate.setHours(expiryDate.getHours() + 1); //Link is set to expire in 1 hour
+
+      const resetToken = nanoid(64); //Number of characters in token
+      await this.ResetTokenModel.create({
+        token: resetToken,
+        userId: user._id,
+        expiryDate
+      });
 
     //TODO: send email with the password reset link (using nodemailer/ SES)
     }
