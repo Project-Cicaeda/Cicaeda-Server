@@ -8,9 +8,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import config from '../config/config';
 
 import { QuestionnaireResult, QuesResultSchema } from '../schemas/ques.schema';
-import { ResultModule } from 'src/result/result.module';
+//import { ResultModule } from 'src/result/result.module';
 import { TsfController } from 'src/tsf/tsf.controller';
 import { TsfService } from 'src/tsf/tsf.service';
+import { QuestionnaireModule } from 'src/questionnaire/questionnaire.module';
 
 @Module({
   imports: [
@@ -40,7 +41,8 @@ import { TsfService } from 'src/tsf/tsf.service';
     }),
 
     AuthModule,
-    ResultModule, // Keeping ResultModule from ResultSaving branch
+    QuestionnaireModule
+    //ResultModule, // Keeping ResultModule from ResultSaving branch
   ],
 
   controllers: [AppController, TsfController],
