@@ -109,11 +109,15 @@ export class AuthService {
 
       //send email with the password reset link (using nodemailer)
       this.mailService.sendPasswordResetEmail(email, resetToken);
-      
-
     }
 
     return { message: 'Password reset link has been sent to your email' };
+  }
+
+  async resetPassword(newPassword: string, resetToken: string) {
+    //TODO: Find a valid reset token document 
+    //TODO: Change user password and hash it
+
   }
 
   async refreshTokens(refreshToken: String) {
