@@ -39,6 +39,8 @@ export class AuthService {
       email,
       password: hashedPassword
     })
+
+    return { message: "Successfully registered! You can now log in" };
   }
 
   async login(credentials: LoginDto) {
@@ -58,6 +60,7 @@ export class AuthService {
     //Generate JWT token
     const tokens = await this.generateUserTokens(user._id);
     return {
+      message: " Login successful! ",
       ...tokens, 
       userId: user._id 
     };
@@ -80,6 +83,8 @@ export class AuthService {
     const newHashedPassword = await bcrypt.hash(newPassword, 10);
     user.password = newHashedPassword;
     await user.save();
+
+    return { message: " Password changed successfully!" };
   }
 
   async forgotPassword(email: string) {
@@ -107,6 +112,7 @@ export class AuthService {
     }
 
     return this.generateUserTokens(token.userId);
+
   }
 
   async generateUserTokens(userId){
