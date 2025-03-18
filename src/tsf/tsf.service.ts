@@ -45,13 +45,14 @@ export class TsfService implements OnModuleInit{
             const inputTensor = new ort.Tensor('float32', new Float32Array(lastSequence.flat()), [1, 12, lastSequence[0].length]);
       
             const results = await this.session.run({ "input_1" : inputTensor });
-
-            const scaledPrediction = results.dense.cpuData[0]
-            const prediction =  Math.floor(this.inverseTransform(scaledPrediction))
-      
-            forecasting.push(prediction);
-            lastSequence.shift();
-            lastSequence.push([prediction, ...lastSequence[lastSequence.length - 1].slice(1)]);
+            if(results.dense){
+              const scaledPrediction = results.dense.data[0]
+              const prediction =  Math.floor(this.inverseTransform(scaledPrediction))
+        
+              forecasting.push(prediction);
+              lastSequence.shift();
+              lastSequence.push([prediction, ...lastSequence[lastSequence.length - 1].slice(1)]);
+            }
           }
           return forecasting
     }
