@@ -1,8 +1,9 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { SaveResult } from "src/schemas/result.schema";
+import { QuestionnaireResult } from "src/schemas/ques.schema";
 import * as fs from "fs";
+import { ResultService } from "src/result/result.service";
 import * as path from "path";
  
 @Injectable()
@@ -19,7 +20,8 @@ export class QuestionnaireService implements OnModuleInit{
     readonly nonScorableFields = ["fName", "lName", "city", "address" ];
 
     constructor(
-        @InjectModel(SaveResult.name) private readonly resultModel:Model<SaveResult>
+        @InjectModel(QuestionnaireResult.name) private readonly resultModel:Model<QuestionnaireResult>,
+        private readonly resultService: ResultService
     ){}
 
     async onModuleInit(){
@@ -61,15 +63,18 @@ export class QuestionnaireService implements OnModuleInit{
                 if( userAge >= range.min && userAge <= range.max){
                     agePoints = range.points;
                     total += agePoints;
+                    break;
                 }
             }
         }
+        return total;
+    }
 
-        const resultSave = await this.resultModel.create({email, total});        
-        
-        //return the stored result
-        return { message: 'Questionnaire successfully submitted', 
-            resultSave};
+    //saving result in the DB
+    async saveQuesResult(userId: string, responses: {key: string; value: string}[]){
+        const totalM = await this.calculation(userId, responses);
+        return this.resultService.saveResult(userId, totalM);
+
     }
 }
 
