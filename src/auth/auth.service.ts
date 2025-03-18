@@ -55,7 +55,7 @@ export class AuthService {
     }
 
     //Generate JWT token
-    const tokens = await this.generateUserTokens(user._id, user.email);
+    const tokens = await this.generateUserTokens(user._id);
     return {
       ...tokens, 
       userId: user._id 
@@ -76,8 +76,8 @@ export class AuthService {
 
   }
 
-  async generateUserTokens(userId, email:string){
-    const accessToken = this.jwtService.sign({userId, email}, {expiresIn: '15m'} ); //Token will last for 15 minutes(Restart server), use https://www.epochconverter.com/ to confirm times
+  async generateUserTokens(userId){
+    const accessToken = this.jwtService.sign({userId}, {expiresIn: '15m'} ); //Token will last for 15 minutes(Restart server), use https://www.epochconverter.com/ to confirm times
     const refreshToken = uuidv4();
 
     await this.storeRefreshToken(refreshToken, userId);
