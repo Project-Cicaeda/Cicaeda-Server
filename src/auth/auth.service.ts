@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { SignupDto } from '../dtos/signup.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../schemas/user.schema';
@@ -116,8 +116,24 @@ export class AuthService {
 
   async resetPassword(newPassword: string, resetToken: string) {
     //TODO: Find a valid reset token document 
-    //TODO: Change user password and hash it
+    const token = await this.ResetTokenModel.findOneAndDelete({
+      token: resetToken,
+      expiryDate: { $gte: new Date() }
+    });
 
+    if (!token) {
+       throw new UnauthorizedException('Invalid link');
+    }
+
+    //Change user password and hash it
+    const user = await this.UserModel.findById(token.userId);
+
+    if(!user){
+      throw new InternalServerErrorException();
+    }
+
+    user.password = await bcrypt.hash(newPassword,10);
+    await user.save();
   }
 
   async refreshTokens(refreshToken: String) {
