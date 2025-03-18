@@ -5,7 +5,7 @@ import { QuestionnaireResult } from "src/schemas/ques.schema";
 import * as fs from "fs";
 import { ResultService } from "src/result/result.service";
 import * as path from "path";
-import { ResultService } from "src/result/result.service";
+// import { ResultService } from "src/result/result.service";
  
 @Injectable()
 export class QuestionnaireService implements OnModuleInit{ //extracting the questions logic
@@ -25,7 +25,7 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
 
     constructor(
         @InjectModel(QuestionnaireResult.name) private readonly resultModel: Model<QuestionnaireResult>,
-        private readonly resultService: ResultService,
+        // private readonly resultService: ResultService,
     ) {}
 
     //loading questions function
@@ -41,7 +41,7 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
     }
 
     //calculation of the points based on the inputs
-    async calculation(userId:string, responses: {key: string; value: string}[]){
+    async calculation(/*userId:string,*/ responses: {key: string; value: string}[]): Promise<number>{
         let total = 0;  //final points
         let userDetails: Record<string, string> = {};  //storing the uer details
         let userAge: number | null = null;  //age of the user
@@ -75,15 +75,18 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
                 }
             }
         }
+e
+
+
+        // await this.saveQuesResult(userId, total);
+
         return total;
     }
 
     //saving result in the DB
-    async saveQuesResult(userId: string, responses: {key: string; value: string}[]){
-        const totalM = await this.calculation(userId, responses);
-        return this.resultService.saveResult(userId, totalM);
-
-    }
+    // async saveQuesResult(userId: string, total: number){
+    //     return this.resultService.saveResult(userId, total);
+    // }
     
 }
 
