@@ -105,7 +105,7 @@ export class AuthService {
         expiryDate
       });
 
-    //TODO: send email with the password reset link (using nodemailer/ SES)
+    //TODO: send email with the password reset link (using nodemailer)
     }
 
     return { message: 'Password reset link has been sent to your email' };
