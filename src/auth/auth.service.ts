@@ -10,6 +10,7 @@ import { RefreshToken } from '../schemas/refresh-token.schema';
 import { v4 as uuidv4 } from 'uuid';
 import { nanoid } from 'nanoid';
 import { ResetToken } from '../schemas/reset-token.schema';
+import { MailService } from 'src/services/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -18,7 +19,8 @@ export class AuthService {
     @InjectModel(User.name) private UserModel: Model<User>,
     @InjectModel(RefreshToken.name) private RefreshTokenModel: Model<RefreshToken>,
     @InjectModel(ResetToken.name) private ResetTokenModel: Model<ResetToken>,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private mailService: MailService
   ){}
 
   async signup(signupData: SignupDto){
@@ -94,7 +96,7 @@ export class AuthService {
     const user = await this.UserModel.findOne({ email });
 
     if(user){
-    //Generate password reset link 
+      //Generate password reset link 
       const expiryDate = new Date();
       expiryDate.setHours(expiryDate.getHours() + 1); //Link is set to expire in 1 hour
 
@@ -105,7 +107,10 @@ export class AuthService {
         expiryDate
       });
 
-    //TODO: send email with the password reset link (using nodemailer)
+      //send email with the password reset link (using nodemailer)
+      this.mailService.sendPasswordResetEmail(email, resetToken);
+      
+
     }
 
     return { message: 'Password reset link has been sent to your email' };
