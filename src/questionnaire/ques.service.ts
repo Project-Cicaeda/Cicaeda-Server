@@ -3,6 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { QuestionnaireResult } from "src/schemas/ques.schema";
 import * as fs from "fs";
+import { ResultService } from "src/result/result.service";
 import * as path from "path";
 import { ResultService } from "src/result/result.service";
  
@@ -23,7 +24,6 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
     readonly nonScorableFields = ["fName", "lName", "city", "address" ];
 
     constructor(
-
         @InjectModel(QuestionnaireResult.name) private readonly resultModel: Model<QuestionnaireResult>,
         private readonly resultService: ResultService,
     ) {}
@@ -71,14 +71,18 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
                 if( userAge >= range.min && userAge <= range.max){
                     agePoints = range.points;
                     total += agePoints;
+                    break;
                 }
             }
         }
+        return total;
     }
 
     //saving result in the DB
-    async saveQuesResult(userId: string, total: number){
-        return this.resultService.saveResult(userId, total);
+    async saveQuesResult(userId: string, responses: {key: string; value: string}[]){
+        const totalM = await this.calculation(userId, responses);
+        return this.resultService.saveResult(userId, totalM);
+
     }
     
 }
