@@ -6,14 +6,21 @@ import { SaveResult } from "src/schemas/result.schema";
 
 @Injectable()
 export class ResultService{
-    constructor(@InjectModel(SaveResult.name) private resultModel: Model<SaveResult>){}
+  
+    constructor(@InjectModel(SaveResult.name) 
+        private readonly resultModel: Model<SaveResult>
+    ){}
 
-    async saveResult(userID: string, totalScore: number){
-        const result = new this.resultModel({userID, totalScore});
-        return result.save();
+    //saving result with the userID
+    async saveResult(userId: string, totalScore: number){
+        const result = new this.resultModel({userId, totalScore});
+        await result.save();
+
+        return {userId, message: "result saved succesfully"};
     }
 
-    async getUserScore(userID: string){
-        return this.resultModel.find({userID}).sort({createdAt: -1}).exec();
+    //getting user result history for the visual representation
+    async getUserScore(userId: string){
+        return this.resultModel.find({userId}).sort({createdAt: -1}).exec();
     }
 }
