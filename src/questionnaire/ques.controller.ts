@@ -12,10 +12,10 @@ export class QuestionnaireController{
     //@UseGuards(AuthGuard)
     @Post("submit")
     async submitQues(
-        @Body() body: { responses: {key: string, value: string}[]}): Promise<number>{
+        @Body() body: { userId: string, responses: {key: string, value: string}[]}): Promise<{msg: string, total: number}>{
 
-           const { responses} = body;
-           return this.questionnaireService.calculation(/*userId,*/ responses);
+           const {userId, responses} = body;
+           return this.questionnaireService.calculation(userId, responses);
         }
     //declare the controller to get the user result history
 }
