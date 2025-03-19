@@ -1,26 +1,26 @@
-import { Injectable } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
-import { SaveResult } from "src/schemas/result.schema";
+// import { Injectable } from "@nestjs/common";
+// import { InjectModel } from "@nestjs/mongoose";
+// import { Model } from "mongoose";
+// import { SaveResult } from "src/schemas/result.schema";
 
 
-@Injectable()
-export class ResultService{
+// @Injectable()
+// export class ResultService{
   
-    constructor(@InjectModel(SaveResult.name) 
-        private readonly resultModel: Model<SaveResult>
-    ){}
+//     constructor(@InjectModel(SaveResult.name) 
+//         private readonly resultModel: Model<SaveResult>
+//     ){}
 
-    //saving result with the userID
-    async saveResult(userId: string, totalScore: number){
-        const result = new this.resultModel({userId, totalScore});
-        await result.save();
+//     //saving result with the userID
+//     async saveResult(userId: string, totalScore: number){
+//         const result = new this.resultModel({userId, totalScore});
+//         await result.save();
 
-        return {userId, message: "result saved succesfully"};
-    }
+//         return {userId, message: "result saved succesfully"};
+//     }
 
-    //getting user result history for the visual representation
-    async getUserScore(userId: string){
-        return this.resultModel.find({userId}).sort({createdAt: -1}).exec();
-    }
-}
+//     //getting user result history for the visual representation
+//     async getUserScore(userId: string){
+//         return this.resultModel.find({userId}).sort({createdAt: -1}).exec();
+//     }
+// }
