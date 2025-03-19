@@ -11,7 +11,7 @@ import { MongooseModule } from '@nestjs/mongoose';
             {name: QuestionnaireResult.name, schema: QuesResultSchema}
         ]),
         // ResultModule,
-
+      
     ],
     controllers: [QuestionnaireController],
     providers: [QuestionnaireService, ResultService],  
