@@ -115,7 +115,7 @@ export class AuthService {
   }
 
   async resetPassword(newPassword: string, resetToken: string) {
-    //TODO: Find a valid reset token document 
+    //Find a valid reset token document 
     const token = await this.ResetTokenModel.findOneAndDelete({
       token: resetToken,
       expiryDate: { $gte: new Date() }

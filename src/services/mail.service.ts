@@ -7,17 +7,16 @@ export class MailService {
 
     constructor() {
         this.transporter = nodemailer.createTransport({
-            host: 'smtp.ethereal.email',
-            port: 587,
+            service: 'gmail',
             auth: { 
-                user: 'michael.wunsch83@ethereal.email',  //ethereal email and password
-                pass: 'ar6EUPprfEHuGRPZ6e'
+                user: 'Projectcicaeda@gmail.com',  //For testing purposes used ethereal mail @ https://ethereal.email/
+                pass: 'agem wfkj drdg qonp'
             }
         });
     }
 
     async sendPasswordResetEmail(to: string, token: string) {
-        const resetLink = `http://yourapp.com/reset-password?token=${token}`;
+        const resetLink = `https://Cicaeda.com/reset-password?token=${token}`; //change according to front end url
         const mailOptions = {
             from: 'Auth-backend service',
             to: to,
