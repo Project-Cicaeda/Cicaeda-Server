@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Req, UseGuards } from "@nestjs/common";
+import { Controller, Post, Body, Get, Req, UseGuards, Param } from "@nestjs/common";
 import { QuestionnaireService } from "./ques.service";
 import { Request } from "express";
 import { AuthGuard } from "src/guards/auth.guard";
@@ -13,10 +13,14 @@ export class QuestionnaireController{
     @Post("submit")
     async submitQues(
         @Body() body: { userId: string, responses: {key: string, value: string}[]}): Promise<{msg: string, total: number}>{
-
            const {userId, responses} = body;
+           console.log("Received userId:", userId, "Type:", typeof userId);
            return this.questionnaireService.calculation(userId, responses);
         }
     //declare the controller to get the user result history
+    @Get("history/:userId")
+    async getHistory(@Param("userId") userId: string): Promise<any>{
+        return this.questionnaireService.getQuesResult(userId)
+    }
 }
 

@@ -4,16 +4,12 @@ import { QuestionnaireService } from '../questionnaire/ques.service';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ResultModule } from 'src/result/result.module';
-import { QuestionnaireResult, QuesResultSchema } from '../schemas/ques.schema';
 import { ResultService } from '../result/result.service';
 
 @Module({
     imports: [
-        MongooseModule.forFeature([{name: SaveResult.name, schema: SaveResultSchema},
-            {name: QuestionnaireResult.name, schema: QuesResultSchema}
-        ]),
+        MongooseModule.forFeature([{ name: SaveResult.name, schema: SaveResultSchema }]),         
         ResultModule,
-
     ],
     controllers: [QuestionnaireController],
     providers: [QuestionnaireService , ResultService],  

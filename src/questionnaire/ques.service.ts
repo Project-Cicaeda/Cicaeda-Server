@@ -1,9 +1,10 @@
-import { Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
+import { Inject, Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { QuestionnaireResult } from "src/schemas/ques.schema";
 import * as fs from "fs";
 import * as path from "path";
+import { Types } from "mongoose";
+import { SaveResult } from "src/schemas/result.schema";
 import { ResultService } from "src/result/result.service";
  
 @Injectable()
@@ -23,8 +24,8 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
     readonly nonScorableFields = ["fName", "lName", "city", "address" ];
 
     constructor(
-        @InjectModel(QuestionnaireResult.name) private readonly resultModel: Model<QuestionnaireResult>,
-        private readonly resultService: ResultService,
+        private resultService: ResultService,
+        @InjectModel('saveResult') private readonly resultModel: Model<SaveResult>,
     ) {}
 
     //loading questions function
@@ -75,17 +76,32 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
             }
         }
 
-        await this.saveQuesResult(userId, total);
+        console.log("checking user id: ", userId); //debug statement
+        const existUser = await this.resultModel.findOne({ userId: new Types.ObjectId(userId) }).exec();
+        console.log("user exists: ", existUser); //debug statement
 
-        let msg = 'your score is: ';
-        return {msg,total};
+        if(existUser){
+            await this.saveQuesResult(userId, total);
+            let msg = 'your score is: ';
+            return {msg,total};
+        }
+        else{
+            throw new Error("User not found");
+        } 
     }
 
     //saving result in the DB
     async saveQuesResult(userId: string, total: number){
-        const result = new this.resultModel({userId, total, createdAt: new Date()});
-        
+        const result = new this.resultModel({userId, total});
         return result.save();
+    }
+
+    async getQuesResult(userId: string){
+        const results = await this.resultModel.find({userId}).sort({createdAt: -1}).exec();
+        if(!results || results.length === 0){
+            throw new Error("No results found");
+        }
+        return results;
     }
     
 }
