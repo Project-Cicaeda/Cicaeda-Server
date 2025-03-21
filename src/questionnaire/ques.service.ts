@@ -79,10 +79,11 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
         }
 
         const existUser = await this.userModel.findOne({ _id: new Types.ObjectId(userId) }).exec();
-
+        const percentage = (total/7) * 100;
         if(existUser){
             await this.saveQuesResult(userId, total);
-            return {total};
+            return {percentage};
+
         }
         else{
             throw new Error("User not found");
