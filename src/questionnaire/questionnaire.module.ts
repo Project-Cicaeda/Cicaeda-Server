@@ -12,6 +12,7 @@ import { User, UserSchema } from 'src/schemas/user.schema';
         MongooseModule.forFeature([{ name: SaveResult.name, schema: SaveResultSchema }]),     
         MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),    
         ResultModule,
+
     ],
     controllers: [QuestionnaireController],
     providers: [QuestionnaireService],  
