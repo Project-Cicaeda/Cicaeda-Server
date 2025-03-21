@@ -83,7 +83,6 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
         const percentage = (total/7) * 100;
         if(existUser){
             await this.saveQuesResult(userId, total);
-
             return {percentage};
         }
         else{
