@@ -7,7 +7,6 @@ import { Types } from "mongoose";
 import { SaveResult } from "src/schemas/result.schema";
 import { ResultService } from "src/result/result.service";
 import { User } from "src/schemas/user.schema";
-
  
 @Injectable()
 export class QuestionnaireService implements OnModuleInit{ //extracting the questions logic
@@ -83,8 +82,7 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
 
         if(existUser){
             await this.saveQuesResult(userId, total);
-            let msg = 'your score is: ';
-            return {msg,total};
+            return {total};
         }
         else{
             throw new Error("User not found");
