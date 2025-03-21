@@ -9,17 +9,25 @@ export class QuestionnaireController{
     constructor(private readonly questionnaireService: QuestionnaireService){}
 
     //post request for submitting the answers
-    //@UseGuards(AuthGuard)
+    @UseGuards(AuthGuard)
     @Post("submit")
     async submitQues(
-        @Body() body: { userId: string, responses: {key: string, value: string}[]}): Promise<{percentage: number}>{
-           const {userId, responses} = body;
+        @Req () req,
+        @Body() body: Record<string, any>): Promise<{percentage: number}>{
+
+            //extracting userId from the request
+            const userId = req.user["userId"];
+
+           const responses = Object.entries(body).map(([key, value]) => ({key, value: String(value)}));
+           
            return this.questionnaireService.calculation(userId, responses);
         }
     //declare the controller to get the user result history
-    @Get("history/:userId")
-    async getHistory(@Param("userId") userId: string): Promise<any>{
-        return this.questionnaireService.getQuesResult(userId)
+    @UseGuards(AuthGuard)
+    @Get("history")
+    async getHistory(@Req() req): Promise<any>{
+        const userId = req.user["userId"];
+        return this.questionnaireService.getQuesResult(userId);
     }
 }
 
