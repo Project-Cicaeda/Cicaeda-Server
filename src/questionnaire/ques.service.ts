@@ -6,6 +6,7 @@ import * as path from "path";
 import { Types } from "mongoose";
 import { SaveResult } from "src/schemas/result.schema";
 import { ResultService } from "src/result/result.service";
+import { User } from "src/schemas/user.schema";
  
 @Injectable()
 export class QuestionnaireService implements OnModuleInit{ //extracting the questions logic
@@ -25,7 +26,8 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
 
     constructor(
         private resultService: ResultService,
-        @InjectModel('saveResult') private readonly resultModel: Model<SaveResult>,
+        @InjectModel(SaveResult.name) private readonly resultModel: Model<SaveResult>,
+        @InjectModel(User.name) private readonly userModel: Model<User>,
     ) {}
 
     //loading questions function
@@ -76,9 +78,7 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
             }
         }
 
-        console.log("checking user id: ", userId); //debug statement
-        const existUser = await this.resultModel.findOne({ userId: new Types.ObjectId(userId) }).exec();
-        console.log("user exists: ", existUser); //debug statement
+        const existUser = await this.userModel.findOne({ _id: new Types.ObjectId(userId) }).exec();
 
         if(existUser){
             await this.saveQuesResult(userId, total);
@@ -92,12 +92,12 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
 
     //saving result in the DB
     async saveQuesResult(userId: string, total: number){
-        const result = new this.resultModel({userId, total});
+        const result = new this.resultModel({userId: new Types.ObjectId(userId), total});
         return result.save();
     }
 
     async getQuesResult(userId: string){
-        const results = await this.resultModel.find({userId}).sort({createdAt: -1}).exec();
+        const results = await this.resultModel.find({userId: new Types.ObjectId(userId)}).sort({createdAt: -1}).exec();
         if(!results || results.length === 0){
             throw new Error("No results found");
         }
