@@ -12,7 +12,7 @@ export class QuestionnaireController{
     //@UseGuards(AuthGuard)
     @Post("submit")
     async submitQues(
-        @Body() body: { userId: string, responses: {key: string, value: string}[]}): Promise<{total: number}>{
+        @Body() body: { userId: string, responses: {key: string, value: string}[]}): Promise<{percentage: number}>{
            const {userId, responses} = body;
            return this.questionnaireService.calculation(userId, responses);
         }
