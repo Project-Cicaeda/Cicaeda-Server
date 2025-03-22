@@ -2,8 +2,7 @@ name: Backend CI/CD
 
 on:
   push:
-    branches:
-      - GithubAction+CICD_Setup
+    branches: [main]
 
 jobs:
   build:
