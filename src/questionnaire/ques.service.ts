@@ -4,8 +4,8 @@ import { Model } from "mongoose";
 import * as fs from "fs";
 import * as path from "path";
 import { Types } from "mongoose";
-import { SaveResult } from "src/schemas/result.schema";
-import { User } from "src/schemas/user.schema";
+import { SaveResult } from "../schemas/result.schema";
+import { User } from "../schemas/user.schema";
  
 @Injectable()
 export class QuestionnaireService implements OnModuleInit{ //extracting the questions logic

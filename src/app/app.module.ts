@@ -8,8 +8,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import config from '../config/config';
 
 import { QuestionnaireResult, QuesResultSchema } from '../schemas/ques.schema';
-import { TsfController } from 'src/tsf/tsf.controller';
-import { TsfService } from 'src/tsf/tsf.service';
+// import { TsfController } from 'src/tsf/tsf.controller';
+// import { TsfService } from 'src/tsf/tsf.service';
 import { QuestionnaireModule } from 'src/questionnaire/questionnaire.module';
 
 @Module({
@@ -44,7 +44,7 @@ import { QuestionnaireModule } from 'src/questionnaire/questionnaire.module';
     //ResultModule // Keeping ResultModule from ResultSaving branch
   ],
 
-  controllers: [AppController, TsfController],
-  providers: [AppService, TsfService],
+  controllers: [AppController/*, TsfController*/],
+  providers: [AppService/*, TsfService*/],
 })
 export class AppModule {}

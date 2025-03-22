@@ -1,8 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { QuestionnaireController } from './ques.controller';
 import { QuestionnaireService } from './ques.service';
-import { TsfController } from 'src/tsf/tsf.controller';
-import { TsfService } from 'src/tsf/tsf.service';
 
 describe('QuestionnaireController', () => {
     let controller: QuestionnaireController;
