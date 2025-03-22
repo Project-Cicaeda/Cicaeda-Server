@@ -5,7 +5,6 @@ import * as fs from "fs";
 import * as path from "path";
 import { Types } from "mongoose";
 import { SaveResult } from "src/schemas/result.schema";
-import { ResultService } from "src/result/result.service";
 import { User } from "src/schemas/user.schema";
  
 @Injectable()
@@ -25,7 +24,6 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
     readonly nonScorableFields = ["fName", "lName", "city", "address" ];
 
     constructor(
-        private resultService: ResultService,
         @InjectModel(SaveResult.name) private readonly resultModel: Model<SaveResult>,
         @InjectModel(User.name) private readonly userModel: Model<User>,
     ) {}
