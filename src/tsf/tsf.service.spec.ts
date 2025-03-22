@@ -39,7 +39,6 @@ describe('TsfService', () => {
   });
 
   it('should make a prediction using the ONNX model with specific input', async () => {
-    // Define the specific (12, 26) input tensor
     const inputData = {
       data:  ort.Tensor.from(
         'float32',
