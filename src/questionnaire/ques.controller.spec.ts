@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { QuestionnaireController } from './ques.controller';
 import { QuestionnaireService } from './ques.service';
+import { JwtService } from '@nestjs/jwt';
 
 describe('QuestionnaireController', () => {
     let controller: QuestionnaireController;
@@ -15,6 +16,13 @@ describe('QuestionnaireController', () => {
               useValue: {
                 calculation: jest.fn().mockResolvedValue({ percentage: 85 }),
                 getQuesResult: jest.fn().mockResolvedValue([{ userId: '123', total: 10 }]),
+              },
+            },
+            {
+              provide: JwtService,
+              useValue: {
+                sign: jest.fn().mockReturnValue('mocked-token'),
+                verify: jest.fn().mockReturnValue({ userId: 'mocked-user-id' }),
               },
             },
           ],

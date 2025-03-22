@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Get, Req, UseGuards, Param } from "@nestjs/common";
 import { QuestionnaireService } from "./ques.service";
-import { AuthGuard } from "src/guards/auth.guard";
+import { AuthGuard } from "../guards/auth.guard";
 
 //questionnaire controller
 @Controller('questionnaire')
