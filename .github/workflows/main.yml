@@ -2,7 +2,11 @@ name: Backend CI/CD
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - GithubAction+CICD_Setup
+      - Time_Series_Forecasting_Endpoint
+    
 
 jobs:
   build:
