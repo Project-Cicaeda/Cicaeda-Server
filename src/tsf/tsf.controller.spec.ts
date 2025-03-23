@@ -1,98 +1,49 @@
-// import { Test, TestingModule } from '@nestjs/testing';
-// import { TsfController } from './tsf.controller';
+import { Test, TestingModule } from '@nestjs/testing';
+import { TsfController } from './tsf.controller';
+import { TsfService } from './tsf.service';
+import * as request from 'supertest';
+import { INestApplication } from '@nestjs/common';
 
-// describe('TsfController', () => {
-//   let controller: TsfController;
+describe('TsfController', () => {
+  let app: INestApplication;
+  let tsfService: TsfService;
 
-//   beforeEach(async () => {
-//     const module: TestingModule = await Test.createTestingModule({
-//       controllers: [TsfController],
-//     }).compile();
-
-//     controller = module.get<TsfController>(TsfController);
-//   });
-
-//   it('should be defined', () => {
-//     expect(controller).toBeDefined();
-//   });
-// });
-import * as ort from 'onnxruntime-node';
-
-jest.mock('onnxruntime-node', () => ({
-  InferenceSession: {
-    create: jest.fn().mockResolvedValue({
-      run: jest.fn().mockResolvedValue({
-        output: new Float32Array([
-          499,
-          440,
-          359,
-          285,
-          230,
-          196,
-          177,
-          168,
-          162,
-          159,
-          155,
-          152
-        ]),
-      }),
-    }),
-  },
-  Tensor: {
-    from: jest.fn((type: string, data: Float32Array, dims: number[]) => ({ type, data, dims })),
-  },
-}));
-
-
-describe('TsfService', () => {
-  let session: ort.InferenceSession;
+  const mockTsfService = {
+    predict: jest.fn().mockResolvedValue([168,147,124,111,107,110,117,124,131,138,145,153]),
+  };
 
   beforeAll(async () => {
-    session = await ort.InferenceSession.create('model.onnx');
+    const moduleRef: TestingModule = await Test.createTestingModule({
+      controllers: [TsfController],
+      providers: [{ provide: TsfService, useValue: mockTsfService }],
+    }).compile();
+
+    app = moduleRef.createNestApplication();
+    await app.init();
+    tsfService = moduleRef.get<TsfService>(TsfService);
   });
 
-  it('should load the ONNX model on module initialization', async () => {
-    expect(session).toBeDefined();
+  afterAll(async () => {
+    await app.close();
   });
 
-  // it('should make a prediction using the ONNX model with specific input', async () => {
-  //   // Define the specific (12, 26) input tensor
-  //   const inputData = {
-  //     data:  ort.Tensor.from(
-  //       'float32',
-  //       new Float32Array([
-  //         ...Array(12).fill([
-  //           0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-  //         ]).flat()
-  //       ]),
-  //       [12, 26]
-  //     ),
-  //   };
-
-
-  //   const result = await session.run(inputData);
-  //   expect(session.run).toHaveBeenCalled();
-  //   expect(result.output).toBeInstanceOf(Float32Array);
-  //   expect(Array.from(result.output)).toEqual([
-  //     499,
-  //     440,
-  //     359,
-  //     285,
-  //     230,
-  //     196,
-  //     177,
-  //     168,
-  //     162,
-  //     159,
-  //     155,
-  //     152
-  //   ]);
-  // });
-
-  it('should throw an error if the model is not loaded', async () => {
-    jest.spyOn(ort.InferenceSession, 'create').mockRejectedValue(new Error('Model load failed'));
-
-    await expect(ort.InferenceSession.create('invalid_model.onnx')).rejects.toThrow('Model load failed');
-  });
+ it('should return forecasted values for a city', async () => {
+    return request(app.getHttpServer())
+      .get('/forecast?city=Colombo')
+      .expect(200)
+      .expect((res) => {
+        expect(res.body).toEqual([    168,
+          147,
+          124,
+          111,
+          107,
+          110,
+          117,
+          124,
+          131,
+          138,
+          145,
+          153]);
+      });
+  });
 });
