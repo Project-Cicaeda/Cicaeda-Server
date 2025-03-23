@@ -16,7 +16,6 @@ onModuleInit() {
     fs.createReadStream(datasetPath)
       .pipe(csv())
       .on('data', (row) => this.dataset.push(row))
-      .on('end', () => console.log('Dataset loaded successfully!'));
   }
 
 
