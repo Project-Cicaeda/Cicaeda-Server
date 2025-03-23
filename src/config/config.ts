@@ -1,9 +1,8 @@
 export default () => ({
     jwt: {
-        secret: process.env.JWT_SECRET, 
+        secret: '123', 
     },
     database: {
-        connectionString: process.env.MONGODB_URL,
+        connectionString: "mongodb+srv://projectcicaeda:se37@cluster0.xoffd.mongodb.net/Data_Base?retryWrites=true&w=majority",
     }
 });
-//Added to pass the confidential info securely instead of staticly coding  
