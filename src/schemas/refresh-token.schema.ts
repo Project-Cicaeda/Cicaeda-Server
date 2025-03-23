@@ -4,7 +4,7 @@ import mongoose, {Document} from "mongoose";
 @Schema({ versionKey: false, timestamps: true})
 export class RefreshToken extends Document{
     @Prop({ required: true })
-    token: String
+    token: string
 
     @Prop({ required: true, type: mongoose.Types.ObjectId })
     userId: mongoose.Types.ObjectId;

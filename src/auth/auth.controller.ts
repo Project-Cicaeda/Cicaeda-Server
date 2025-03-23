@@ -40,6 +40,6 @@ export class AuthController {
 
   @Put('reset-password') //auth/reset-password
   async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
-    return this.authService.resetPassword(resetPasswordDto.newPassword, resetPasswordDto.resetToken);
+    return this.authService.resetPassword(resetPasswordDto);
   }
 }

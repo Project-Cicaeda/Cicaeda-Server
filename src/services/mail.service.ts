@@ -15,13 +15,25 @@ export class MailService {
         });
     }
 
-    async sendPasswordResetEmail(to: string, token: string) {
-        const resetLink = `https://Cicaeda.com/reset-password?token=${token}`; //change according to front end url
-        const mailOptions = {
+    // async sendPasswordResetEmail(to: string, token: string) {
+    //     const resetLink = `https://Cicaeda.com/reset-password?token=${token}`; //change according to front end url
+    //     const mailOptions = {
+    //         from: 'Auth-backend service',
+    //         to: to,
+    //         subject: 'Password Reset Request',
+    //         html: `<p>You requested a password reset. Click the link below to reset your password: </p><p><a href="${resetLink}">Reset Password</a></p><p>If this was not you, please ignore this email.</p>`
+    //     };
+
+    //     await this.transporter.sendMail(mailOptions);
+    // }
+
+    async sendOTP( to: string, OTP: string) {
+        const mailOptions = { 
             from: 'Auth-backend service',
             to: to,
-            subject: 'Password Reset Request',
-            html: `<p>You requested a password reset. Click the link below to reset your password: </p><p><a href="${resetLink}">Reset Password</a></p><p>If this was not you, please ignore this email.</p>`
+            subject: 'OTP for password reset',
+            html: `<p>Your OTP for password reset is:  <STRONG>${OTP}</STRONG> </p>
+                   <p>This OTP is valid for 10 minutes. If you did not request a password reset, please ignore this email.</p>`
         };
 
         await this.transporter.sendMail(mailOptions);

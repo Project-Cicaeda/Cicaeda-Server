@@ -11,6 +11,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { nanoid } from 'nanoid';
 import { ResetToken } from '../schemas/reset-token.schema';
 import { MailService } from 'src/services/mail.service';
+import { ResetPasswordDto } from '../dtos/reset-password.dto';
+
 
 @Injectable()
 export class AuthService {
@@ -98,35 +100,46 @@ export class AuthService {
     if(user){
       //Generate password reset link 
       const expiryDate = new Date();
-      expiryDate.setHours(expiryDate.getHours() + 1); //Link is set to expire in 1 hour
+      expiryDate.setMinutes(expiryDate.getMinutes() + 10); //Link is set to expire in 10 minutes
 
-      const resetToken = nanoid(64); //Number of characters in token
-      await this.ResetTokenModel.create({
-        token: resetToken,
+      // const resetToken = nanoid(64); //Number of characters in token
+      // await this.ResetTokenModel.create({
+      //   token: resetToken,
+      //   userId: user._id,
+      //   expiryDate
+      // });
+
+      // //send email with the password reset link (using nodemailer)
+      // this.mailService.sendPasswordResetEmail(email, resetToken);
+
+      const OTP = Math.floor(100000 + Math.random() * 900000).toString();
+      const otpEntry = await this.ResetTokenModel.create({
+        token: OTP,
         userId: user._id,
-        expiryDate
+        expiryDate                          //changing to fit OTP instead of resetToken
       });
 
-      //send email with the password reset link (using nodemailer)
-      this.mailService.sendPasswordResetEmail(email, resetToken);
+      await this.mailService.sendOTP(email, OTP);
+
     }
 
-    return { message: 'Password reset link has been sent to your email' };
+    //return { message: 'Password reset link has been sent to your email' };
+    return { message: 'OTP has been sent to your email' };
   }
 
-  async resetPassword(newPassword: string, resetToken: string) {
-    //Find a valid reset token document 
-    const token = await this.ResetTokenModel.findOneAndDelete({
-      token: resetToken,
+  async resetPassword(resetPasswordDto: ResetPasswordDto) {
+    const { email, newPassword, OTP } = resetPasswordDto;
+
+    const storedOTP = await this.ResetTokenModel.findOne({
+      token: OTP.toString(),
       expiryDate: { $gte: new Date() }
     });
 
-    if (!token) {
-       throw new UnauthorizedException('Invalid link');
+    if (!storedOTP) {
+      throw new UnauthorizedException('Invalid OTP');             //switched to fit the OTP instead of resetToken
     }
 
-    //Change user password and hash it
-    const user = await this.UserModel.findById(token.userId);
+    const user = await this.UserModel.findOne({ email });
 
     if(!user){
       throw new InternalServerErrorException();
@@ -134,16 +147,44 @@ export class AuthService {
 
     user.password = await bcrypt.hash(newPassword,10);
     await user.save();
+
+    //Deleting OTP after reseting password
+    await this.ResetTokenModel.deleteOne({ token: OTP.toString });
+
+    return { message : ' Password has been reset successfully!' };
+
   }
 
-  async refreshTokens(refreshToken: String) {
+  // async resetPassword(newPassword: string, resetToken: string) {
+  //   //Find a valid reset token document 
+  //   const token = await this.ResetTokenModel.findOneAndDelete({
+  //     token: resetToken,
+  //     expiryDate: { $gte: new Date() }
+  //   });
+
+  //   if (!token) {
+  //      throw new UnauthorizedException('Invalid link');
+  //   }
+
+  //   //Change user password and hash it
+  //   const user = await this.UserModel.findById(token.userId);
+
+  //   if(!user){
+  //     throw new InternalServerErrorException();
+  //   }
+
+  //   user.password = await bcrypt.hash(newPassword,10);
+  //   await user.save();
+  // }
+
+  async refreshTokens(refreshToken: string) {
     const token = await this.RefreshTokenModel.findOne({
       token: refreshToken,
       expiryDate: { $gte: new Date() }
     });
 
     if(!token) {
-      throw new UnauthorizedException("Refresh Token is invalid or expired");
+      throw new UnauthorizedException("Refresh Token is invalid or expired"); //Frontend will redirect to login page for new tokens
     }
 
     return this.generateUserTokens(token.userId);
@@ -152,16 +193,16 @@ export class AuthService {
 
   async generateUserTokens(userId){
     const accessToken = this.jwtService.sign({userId}, {expiresIn: '15m'} ); //Token will last for 15 minutes(Restart server), use https://www.epochconverter.com/ to confirm times
-    const refreshToken = uuidv4(); 
-
-    await this.storeRefreshToken(refreshToken, userId);
-    return {
-      accessToken,
-      refreshToken
-    }
+    const refreshToken = uuidv4();
+ 
+     await this.storeRefreshToken(refreshToken, userId);
+     return {
+       accessToken,
+       refreshToken
+     };
   }
 
-  async storeRefreshToken(token: String, userId) {
+  async storeRefreshToken(token: string, userId: string) {
     const expiryDate = new Date();
     expiryDate.setDate(expiryDate.getDate() + 3); //Refresh token will expire after 3 days from creation 
 
