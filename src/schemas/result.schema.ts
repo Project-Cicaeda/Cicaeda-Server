@@ -8,7 +8,7 @@ export class SaveResult extends Document{
     userId: Types.ObjectId; //to check the user account
 
     @Prop({type: Number, required:true})
-    total: number; //questionnaire score
+    percentage: number; //questionnaire score
 
     @Prop({ required: true, default: Date.now})
     createdAt: Date; //date the result was saved

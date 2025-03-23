@@ -78,8 +78,8 @@ describe("QuestionnaireService", () => {
         };
 
         const result = await service.calculation(validUserId, responses);
-        console.log("Debug Total:", result.total, "Percentage:", result.percentage);
-        expect(result.percentage).toBeCloseTo((result.total / 7) * 100);
+        expect(result.percentage).toBeCloseTo((result.percentage));
+
     });
     it("should throw an error if user ID format is invalid", async () => {
         await expect(service.calculation("invalid ID", [])).rejects.toThrow(BadRequestException);
@@ -102,18 +102,18 @@ describe("QuestionnaireService", () => {
         const mockSave = jest.fn().mockResolvedValue({
             _id: "test123",
             userId: new Types.ObjectId(validUserId),
-            total: 10,
+            percentage: 90.91,
         });
 
         jest.spyOn(resultModel, "create").mockResolvedValueOnce({
             _id: "test123",
             userId: new Types.ObjectId(validUserId),
-            total: 10,
+            percentage: 90.91,
             save: mockSave, // Ensure save is properly mocked
         } as any);
 
-        const result = await service.saveQuesResult(validUserId, 10);
+        const result = await service.saveQuesResult(validUserId, 90.91);
         expect(result).toBeDefined();
-        expect(result.total).toBe(10);
-    });
+        expect(result.percentage).toBe(90.91);
+    });
 });

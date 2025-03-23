@@ -83,8 +83,8 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
         const existUser = await this.userModel.findOne({ _id: new Types.ObjectId(userId) }).exec();
         const percentage = (total/11) * 100;
         if(existUser){
-            await this.saveQuesResult(userId, total);
-            return {percentage, total};
+            await this.saveQuesResult(userId, percentage);
+            return {percentage};
 
         }
         else{
@@ -93,7 +93,7 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
     }
 
     //saving result in the DB
-    async saveQuesResult(userId: string, total: number){
+    async saveQuesResult(userId: string, percentage: number){
 
         if (!Types.ObjectId.isValid(userId)) {
             throw new BadRequestException("Invalid user ID format");
@@ -101,7 +101,7 @@ export class QuestionnaireService implements OnModuleInit{ //extracting the ques
 
         return await this.resultModel.create({
             userId: new Types.ObjectId(userId),
-            total,
+            percentage
         });
     }
 
