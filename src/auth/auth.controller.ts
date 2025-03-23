@@ -6,7 +6,7 @@ import { RefreshTokenDto } from '../dtos/refresh-tokens.dto';
 import { ChangePasswordDto } from '../dtos/change-password.dto';
 import { AuthGuard } from '../guards/auth.guard';
 import { ForgotPasswordDto } from '../dtos/forgot-password.dto';
-import { ResetPasswordDto } from '../dtos/reset-password.dto';
+import { ResetPasswordDto,OTPVerificationDto } from '../dtos/reset-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -38,7 +38,12 @@ export class AuthController {
     return this.authService.forgotPassword(forgotPasswordDto.email);
   }
 
-  @Put('reset-password') //auth/reset-password
+  @Post('verify-otp') // auth/verify-otp
+  async verifyOTP(@Body() otpVerificationDto: OTPVerificationDto) {
+    return this.authService.verifyOTP(otpVerificationDto);
+  }
+
+  @Put('reset-password') // auth/reset-password
   async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     return this.authService.resetPassword(resetPasswordDto);
   }

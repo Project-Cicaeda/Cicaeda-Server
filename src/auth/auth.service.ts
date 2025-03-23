@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { nanoid } from 'nanoid';
 import { ResetToken } from '../schemas/reset-token.schema';
 import { MailService } from 'src/services/mail.service';
-import { ResetPasswordDto } from '../dtos/reset-password.dto';
+import { ResetPasswordDto,OTPVerificationDto } from '../dtos/reset-password.dto';
 
 
 @Injectable()
@@ -127,33 +127,40 @@ export class AuthService {
     return { message: 'OTP has been sent to your email' };
   }
 
-  async resetPassword(resetPasswordDto: ResetPasswordDto) {
-    const { email, newPassword, OTP } = resetPasswordDto;
+  async verifyOTP(otpVerificationDto: OTPVerificationDto) {
+    const { email, OTP } = otpVerificationDto;
 
     const storedOTP = await this.ResetTokenModel.findOne({
       token: OTP.toString(),
-      expiryDate: { $gte: new Date() }
+      expiryDate: { $gte: new Date() },
     });
 
     if (!storedOTP) {
-      throw new UnauthorizedException('Invalid OTP');             //switched to fit the OTP instead of resetToken
+      throw new UnauthorizedException('Invalid or expired OTP');
     }
+
+    return { message: 'OTP verified successfully', email };
+  }
+
+  async resetPassword(resetPasswordDto: ResetPasswordDto) {
+    const { email, newPassword } = resetPasswordDto;
 
     const user = await this.UserModel.findOne({ email });
 
-    if(!user){
-      throw new InternalServerErrorException();
+    if (!user) {
+      throw new InternalServerErrorException('User not found');
     }
 
-    user.password = await bcrypt.hash(newPassword,10);
+    user.password = await bcrypt.hash(newPassword, 10);
     await user.save();
 
-    //Deleting OTP after reseting password
-    await this.ResetTokenModel.deleteOne({ token: OTP.toString });
+    // Delete OTP after password reset
+    await this.ResetTokenModel.deleteOne({ email });
 
-    return { message : ' Password has been reset successfully!' };
-
+    return { message: 'Password has been reset successfully!' };
   }
+
+
 
   // async resetPassword(newPassword: string, resetToken: string) {
   //   //Find a valid reset token document 
