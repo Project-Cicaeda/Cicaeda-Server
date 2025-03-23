@@ -27,7 +27,7 @@ describe('TsfController', () => {
     await app.close();
   });
 
- it('should return forecasted values for a city', async () => {
+  it('should return forecasted values for a city', async () => {
     return request(app.getHttpServer())
       .get('/forecast?city=Colombo')
       .expect(200)
