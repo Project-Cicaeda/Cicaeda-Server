@@ -1,7 +1,6 @@
 import { Controller, Post, Body, Get, Req, UseGuards, Param } from "@nestjs/common";
 import { QuestionnaireService } from "./ques.service";
-import { Request } from "express";
-import { AuthGuard } from "src/guards/auth.guard";
+import { AuthGuard } from "../guards/auth.guard";
 
 //questionnaire controller
 @Controller('questionnaire')
@@ -18,6 +17,7 @@ export class QuestionnaireController{
             //extracting userId from the request
             const userId = req.user["userId"];
 
+            //mapping the responses
            const responses = Object.entries(body).map(([key, value]) => ({key, value: String(value)}));
            
            return this.questionnaireService.calculation(userId, responses);
@@ -28,6 +28,6 @@ export class QuestionnaireController{
     async getHistory(@Req() req): Promise<any>{
         const userId = req.user["userId"];
         return this.questionnaireService.getQuesResult(userId);
-    }
+    }
 }
 
