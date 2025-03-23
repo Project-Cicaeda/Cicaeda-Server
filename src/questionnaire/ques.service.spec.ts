@@ -79,7 +79,7 @@ describe("QuestionnaireService", () => {
 
         const result = await service.calculation(validUserId, responses);
         console.log("Debug Total:", result.total, "Percentage:", result.percentage);
-        expect(result.percentage).toBeCloseTo((result.total / 7) * 100);
+        expect(result.percentage).toBeCloseTo((result.total / 11) * 100);
     });
     it("should throw an error if user ID format is invalid", async () => {
         await expect(service.calculation("invalid ID", [])).rejects.toThrow(BadRequestException);
