@@ -96,8 +96,7 @@ export class AuthService {
   async forgotPassword(email: string) {
     //Confirm user exists
     const user = await this.UserModel.findOne({ email });
-
-    if(user){
+    if(user != null) {
       //Generate password reset link 
       const expiryDate = new Date();
       expiryDate.setMinutes(expiryDate.getMinutes() + 10); //Link is set to expire in 10 minutes
